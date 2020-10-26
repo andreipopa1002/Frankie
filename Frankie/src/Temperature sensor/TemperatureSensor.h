@@ -1,15 +1,15 @@
 #ifndef TemperatureSensor_h
 #define TemperatureSensor_h
 
-#include <Adafruit_MAX31865.h>
 #include "Arduino.h"
+#include <Adafruit_MAX31865.h>
 
 class TemperatureSensor {
     public:
         TemperatureSensor(int csPin, int diPin, int doPin, int clkPin);
+        
         void begin();
         float temperature();
-
         void printSensorFaults();
         void printRawValues();
     private:

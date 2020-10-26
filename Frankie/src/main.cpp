@@ -1,43 +1,39 @@
 #include <Arduino.h>
-#include "Temperature sensor/TemperatureSensor.h"
 #include <Adafruit_MAX31865.h>
+#include <U8g2lib.h>
+
+#include "Temperature sensor/TemperatureSensor.h"
+#include "Logger/Logger.h"
+#include "Controller/Controller.h"
+#include "Relay/Relay.h"
 
 TemperatureSensor *thermo;
+Logger *logger;
+Controller *controller;
+Relay *relay;
+Presenter *presenter;
 
 void setup() {
   Serial.begin(9600);
   while(!Serial);
+  Serial.println("Setup started");
+  // 13,12,14,2 - works
+  // also work:
+  //      0
 
-  thermo = new TemperatureSensor(D3, D4, D5, D6);
-  Serial.println();
-  Serial.println();
-  Serial.println("Adafruit MAX31865 PT100 Sensor Test!");
-  thermo->begin();
+  thermo = new TemperatureSensor(13,12,14,0);
+  logger = new Logger(5,4, 16);
+  relay = new Relay(0,0);
+  presenter = new Presenter(logger);
+  controller = new Controller(thermo, relay, presenter);
+  controller->begin();
 
-  pinMode(D1, OUTPUT);
-  pinMode(D0, OUTPUT);
-  digitalWrite(D1,LOW);
-  digitalWrite(D0,LOW);
+  Serial.println("Setup finished");
 }
 
 
 void loop() {
-  float temperature = thermo->temperature();
-  Serial.print("temperature:");
-  Serial.println(temperature);
+  controller->loop();
   
-
-  if (temperature > 25) {
-    digitalWrite(D0, HIGH);
-  } else {
-    digitalWrite(D0, LOW);
-  }  
-
-  if (temperature >27) {
-    digitalWrite(D1, HIGH);
-  } else {
-    digitalWrite(D1, LOW);
-  }
-
-  delay(1000);
+  delay(10);
 }
