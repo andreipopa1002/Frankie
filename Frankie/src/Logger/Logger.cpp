@@ -13,32 +13,26 @@ void Logger::begin() {
     _display->setFont(u8x8_font_pxplustandynewtv_f);
 
     _u8g2Logger.begin(*_display, DISPLAY_WIDTH, DISPLAY_HEIGHT, BUFFER);
-    _u8g2Logger.setRedrawMode(0);/// 0: Update screen with newline, 1: Update screen for every char
+    _u8g2Logger.setRedrawMode(1);/// 0: Update screen with newline, 1: Update screen for every char
 }
 
-void Logger::print(String line) {
+void Logger::terminal_print(String line) {
     _u8g2Logger.print(line);
 }
 
-void Logger::print(float line) {
+void Logger::terminal_print(float line) {
     _u8g2Logger.print(line);
 }
 
-void Logger::println(String line) {
+void Logger::terminal_println(String line) {
     _u8g2Logger.println(line);
 }
 
-void Logger::println(float line) {
+void Logger::terminal_println(float line) {
     _u8g2Logger.println(line);
 }
 
 void Logger::print4Lines(String title, String line1, String line2, String line3) {
-    // _u8g2Logger.print("\f");
-    // _u8g2Logger.println(title);
-    // _u8g2Logger.println(line1);
-    // _u8g2Logger.println(line2);
-    // _u8g2Logger.println(line3);
-    // _display->clear();
     _display->drawString(0,0,title.c_str());
     _display->drawString(0,1,line1.c_str());
     _display->drawString(0,2,line2.c_str());

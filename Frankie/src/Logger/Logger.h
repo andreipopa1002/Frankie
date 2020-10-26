@@ -12,10 +12,10 @@ class Logger {
         Logger(uint8_t clock, uint8_t data, uint8_t reset);
         
         void begin();
-        void print(String line);
-        void print(float line);
-        void println(String line);
-        void println(float line);
+        void terminal_print(String line);
+        void terminal_print(float line);
+        void terminal_println(String line);
+        void terminal_println(float line);
         void print4Lines(String title, String line1, String line2, String line3);
     private:
         U8X8 *_display;

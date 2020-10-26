@@ -10,12 +10,13 @@ void Presenter::begin() {
 
 void Presenter::setupScreen() {
     Serial.println("setup screen");
-    _logger->print4Lines(
-        "",
-        "** La Pavoni **",
-        "",
-        "-active cooling-"
-    );
+    _logger->terminal_println("\n** La Pavoni **\n-active cooling-");
+    // _logger->print4Lines(
+    //     "",
+    //     "** La Pavoni **",
+    //     "",
+    //     "-active cooling-"
+    // );
     delay(3000);
 }
 
