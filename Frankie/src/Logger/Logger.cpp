@@ -38,3 +38,8 @@ void Logger::print4Lines(String title, String line1, String line2, String line3)
     _display->drawString(0,2,line2.c_str());
     _display->drawString(0,3,line3.c_str());
 }
+
+void Logger::clear() {
+    _u8g2Logger.print("\f");
+    _display->clearDisplay();
+}

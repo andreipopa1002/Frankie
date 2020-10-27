@@ -1,5 +1,8 @@
 #include "Arduino.h"
 #include "Controller.h"
+#include "Temperature sensor/TemperatureSensor.h"
+#include "Presenter/TemperaturePresenter.h"
+#include "Relay/Relay.h"
 
 const float TOP_FAN_ON_TEMP = 23;//85.0;
 const float TOP_FAN_OFF_TEMP = 22;//80.0;
@@ -9,11 +12,11 @@ const float SIDE_FAN_OFF_TEMP = 25;//85.0;
 Controller::Controller(
     TemperatureSensor *thermo, 
     Relay *relay,
-    Presenter *presenter
+    TemperaturePresenter *temperaturePresenter
 ) {
     _thermo = thermo;
     _relay = relay;
-    _presenter = presenter;
+    _presenter = temperaturePresenter;
 }
 
 void Controller::begin() {

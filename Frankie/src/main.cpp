@@ -1,17 +1,46 @@
 #include <Arduino.h>
-#include <Adafruit_MAX31865.h>
-#include <U8g2lib.h>
+#include "WiFiManager.h"
+#include <ESP_DoubleResetDetector.h>
 
 #include "Temperature sensor/TemperatureSensor.h"
 #include "Logger/Logger.h"
 #include "Controller/Controller.h"
 #include "Relay/Relay.h"
+#include "Presenter/WifiManagerPresenter.h"
+#include "Presenter/TemperaturePresenter.h"
+
+DoubleResetDetector *resetDetector;
 
 TemperatureSensor *thermo;
 Logger *logger;
 Controller *controller;
 Relay *relay;
-Presenter *presenter;
+TemperaturePresenter *temperaturePresenter;
+WifiManagerPresenter *wifiPresenter;
+WiFiManager wifiManager;
+
+void configModeCallback (WiFiManager *myWiFiManager) {
+  wifiPresenter->enteringConfigMode(myWiFiManager->getConfigPortalSSID());
+}
+
+void checkForUserResetRequest() {
+  if (resetDetector->detectDoubleReset()) {
+    Serial.println("Double reset detected");
+    wifiManager.resetSettings();
+  }
+}
+
+void launchWifi() {
+  wifiPresenter->loading("Loading", 5);
+  wifiManager.setAPCallback(configModeCallback);
+  if(!wifiManager.autoConnect("La Pavoni")) {
+    wifiPresenter->failedToConnect();
+    ESP.reset();
+  } 
+
+  wifiPresenter->connectedToWifi(WiFi.SSID());
+  controller->begin();
+}
 
 void setup() {
   Serial.begin(9600);
@@ -21,19 +50,24 @@ void setup() {
   // also work:
   //      0
 
-  thermo = new TemperatureSensor(13,12,14,0);
-  logger = new Logger(5,4, 16);
-  relay = new Relay(0,0);
-  presenter = new Presenter(logger);
-  controller = new Controller(thermo, relay, presenter);
-  controller->begin();
+  resetDetector = new DoubleResetDetector(10, 0);
+  checkForUserResetRequest();
 
+  thermo = new TemperatureSensor(13,12,14,0);
+  relay = new Relay(0,0);
+  logger = new Logger(5,4, 16);
+  logger->begin();
+  temperaturePresenter = new TemperaturePresenter(logger);
+  controller = new Controller(thermo, relay, temperaturePresenter);
+  wifiPresenter = new WifiManagerPresenter(logger);
+  
+  launchWifi();
+  
   Serial.println("Setup finished");
 }
 
-
 void loop() {
   controller->loop();
-  
+  resetDetector->loop();
   delay(10);
 }

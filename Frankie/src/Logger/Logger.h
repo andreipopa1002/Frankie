@@ -17,6 +17,7 @@ class Logger {
         void terminal_println(String line);
         void terminal_println(float line);
         void print4Lines(String title, String line1, String line2, String line3);
+        void clear();
     private:
         U8X8 *_display;
         uint8_t _buffer[DISPLAY_WIDTH * DISPLAY_HEIGHT];

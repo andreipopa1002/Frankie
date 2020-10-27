@@ -1,36 +1,16 @@
+#include "Arduino.h"
 #include "Presenter.h"
+#include "Logger/Logger.h"
 
 Presenter::Presenter(Logger *logger) {
     _logger = logger;
 }
 
-void Presenter::begin() {
-    _logger->begin();
-}
-
-void Presenter::setupScreen() {
-    Serial.println("setup screen");
-    _logger->terminal_println("\n** La Pavoni **\n-active cooling-");
-    // _logger->print4Lines(
-    //     "",
-    //     "** La Pavoni **",
-    //     "",
-    //     "-active cooling-"
-    // );
-    delay(3000);
-}
-
-void Presenter::mainScreen(
-    float temperature, 
-    bool isTopFanOn,
-     bool isSideFanOn
-) {
-    Serial.println(String("Temp: " + String(temperature) + "°C"));
-
-    _logger->print4Lines(
-        "** La Pavoni **",
-        String("Temp:    " + String(temperature) + "\xb0" + "C"),
-        String("Top fans:    ") + String(isTopFanOn ? " ON" : "OFF"),
-        String("Side fans:   ") + String(isSideFanOn ? " ON" : "OFF")
-    );
+void Presenter::loading(String message, int duration) {
+    _logger->terminal_print("\n" + message);
+    for (int i = 0; i < duration; i++) {
+        delay(500);
+    _logger->terminal_print(".");
+    }
+    delay(500);
 }
