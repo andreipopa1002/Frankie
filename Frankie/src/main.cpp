@@ -46,15 +46,12 @@ void setup() {
   Serial.begin(9600);
   while(!Serial);
   Serial.println("Setup started");
-  // 13,12,14,2 - works
-  // also work:
-  //      0
 
   resetDetector = new DoubleResetDetector(10, 0);
   checkForUserResetRequest();
 
-  thermo = new TemperatureSensor(13,12,14,0);
-  relay = new Relay(0,0);
+  thermo = new TemperatureSensor(0, 13, 12, 14);
+  relay = new Relay(3,2);
   logger = new Logger(5,4, 16);
   logger->begin();
   temperaturePresenter = new TemperaturePresenter(logger);
