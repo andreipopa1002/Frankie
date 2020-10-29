@@ -17,6 +17,7 @@ Controller::Controller(
     _thermo = thermo;
     _relay = relay;
     _presenter = temperaturePresenter;
+    _lastTriggeringTemperature = 0.0;
 }
 
 void Controller::begin() {
@@ -29,13 +30,22 @@ void Controller::begin() {
 void Controller::loop() {
     float temperature = _thermo->temperature();
 
-    bool isSwitch1_On = this->isSwitchOn(temperature, TOP_FAN_ON_TEMP, TOP_FAN_OFF_TEMP);
-    bool isSwitch2_On = this->isSwitchOn(temperature, SIDE_FAN_ON_TEMP, SIDE_FAN_OFF_TEMP);
+    bool shouldActivateSwitch1 = isSwitchOn(temperature, TOP_FAN_ON_TEMP, TOP_FAN_OFF_TEMP);
+    bool shouldActivateSwitch2 = isSwitchOn(temperature, SIDE_FAN_ON_TEMP, SIDE_FAN_OFF_TEMP);
    
-    _relay->activateSwitch1(isSwitch1_On);
-    _relay->activateSwitch2(isSwitch2_On);
+    if (_relay->isSwitch1Active() != shouldActivateSwitch1
+        && isTemperatureChangeSignificant(temperature)) {
+        _relay->activateSwitch1(shouldActivateSwitch1);
+        _lastTriggeringTemperature = temperature;
+    }
 
-    _presenter->mainScreen(temperature, isSwitch1_On, isSwitch2_On);
+    if (_relay->isSwitch2Active() != shouldActivateSwitch2
+        && isTemperatureChangeSignificant(temperature)) {
+        _relay->activateSwitch2(shouldActivateSwitch2);
+        _lastTriggeringTemperature = temperature;
+    }
+
+    _presenter->mainScreen(temperature, _relay->isSwitch1Active(), _relay->isSwitch2Active());
 }
 
 bool Controller::isSwitchOn(float temperature, float turnOnTemp, float turnOffTemp) {
@@ -52,3 +62,6 @@ bool Controller::isSwitchOn(float temperature, float turnOnTemp, float turnOffTe
     return isSwitchOn;
 }
 
+bool Controller::isTemperatureChangeSignificant(float temperature) {
+    return abs(_lastTriggeringTemperature - temperature) >= 0.25;
+}
