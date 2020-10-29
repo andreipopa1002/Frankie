@@ -4,10 +4,10 @@
 #include "Presenter/TemperaturePresenter.h"
 #include "Relay/Relay.h"
 
-const float TOP_FAN_ON_TEMP = 23;//85.0;
-const float TOP_FAN_OFF_TEMP = 22;//80.0;
-const float SIDE_FAN_ON_TEMP = 30;//90.0;
-const float SIDE_FAN_OFF_TEMP = 25;//85.0;
+const float TOP_FAN_ON_TEMP = 85.0;//23;
+const float TOP_FAN_OFF_TEMP = 80.0;//22;
+const float SIDE_FAN_ON_TEMP = 90.0;//30;
+const float SIDE_FAN_OFF_TEMP = 85.0;//25;
 
 Controller::Controller(
     TemperatureSensor *thermo, 

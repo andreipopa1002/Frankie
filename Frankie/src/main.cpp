@@ -51,7 +51,7 @@ void setup() {
   checkForUserResetRequest();
 
   thermo = new TemperatureSensor(0, 13, 12, 14);
-  relay = new Relay(3,2);
+  relay = new Relay(2,3);
   logger = new Logger(5,4, 16);
   logger->begin();
   temperaturePresenter = new TemperaturePresenter(logger);
