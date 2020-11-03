@@ -31,11 +31,13 @@ bool Relay::isSwitch2Active() {
 void Relay::activateSwitch1(bool isActive) {
     if (_isSwitch1Active != isActive) {
         digitalWrite(_pinSwitch1, isActive ? HIGH : LOW);
+        _isSwitch1Active = isActive;
     }
 }
 
 void Relay::activateSwitch2(bool isActive) {
     if (_isSwitch2Active != isActive) {
         digitalWrite(_pinSwitch2, isActive ? HIGH : LOW);
+        _isSwitch2Active = isActive;
     }
 }

@@ -33,13 +33,13 @@ void Controller::loop() {
     bool shouldActivateSwitch1 = isSwitchOn(temperature, TOP_FAN_ON_TEMP, TOP_FAN_OFF_TEMP);
     bool shouldActivateSwitch2 = isSwitchOn(temperature, SIDE_FAN_ON_TEMP, SIDE_FAN_OFF_TEMP);
    
-    if (_relay->isSwitch1Active() != shouldActivateSwitch1
+    if ((_relay->isSwitch1Active() != shouldActivateSwitch1)
         && isTemperatureChangeSignificant(temperature)) {
         _relay->activateSwitch1(shouldActivateSwitch1);
         _lastTriggeringTemperature = temperature;
     }
 
-    if (_relay->isSwitch2Active() != shouldActivateSwitch2
+    if ((_relay->isSwitch2Active() != shouldActivateSwitch2)
         && isTemperatureChangeSignificant(temperature)) {
         _relay->activateSwitch2(shouldActivateSwitch2);
         _lastTriggeringTemperature = temperature;
@@ -63,5 +63,7 @@ bool Controller::isSwitchOn(float temperature, float turnOnTemp, float turnOffTe
 }
 
 bool Controller::isTemperatureChangeSignificant(float temperature) {
-    return abs(_lastTriggeringTemperature - temperature) >= 0.25;
+    Serial.print("temperature difference: ");
+    Serial.println(fabs(_lastTriggeringTemperature - temperature));
+    return fabs(_lastTriggeringTemperature - temperature) >= 0.25;
 }
